@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "AlgoSats",
+    "slug": "AlgoSats",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "1.0.0",
+    "sdkVersion": "37.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "algosats",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "cover",
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "bundleIdentifier": "com.ipa.algosats",
+      "supportsTablet": true
+    },
+    "web": {
+      "favicon": "./assets/images/favicon.png"
+    },
+    "android": {
+      "package": "com.apk.algosats"
+    }
+  }
+}
