@@ -32,3 +32,24 @@ export const setTheme = (data) => (
 		payload: data
 	}
 )
+
+export const setWallet = (data) => (
+	{
+		type: 'WALLET',
+		payload: data
+	}
+)
+
+export const setWs = (data) => (
+	{
+		type: 'WS',
+		payload: data
+	}
+)
+
+export const setPrices = (data) => (
+	{
+		type: 'PRICES',
+		payload: data
+	}
+)

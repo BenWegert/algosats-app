@@ -26,24 +26,6 @@ const theme = {
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
-// 	Wallet: {
-// 		screen: Home,
-// 		navigationOptions: {
-// 			tabBarIcon: ({ focused, color, size }) => {
-// 				let iconName;
-
-// 				if (route.name === 'Home') {
-// 					iconName = 
-// 				} 
-// 				else if (route.name === 'Settings') {
-// 					iconName = focused ? 'ios-list-box' : 'ios-list';
-// 				}
-
-// 				// You can return any component that you like here!
-// 				return <Ionicons name={focused ? 'ios-information-circle' : 'ios-information-circle-outline';} size={size} color={color} />;
-// 		}
-// 	}
-// });
 
 const registerForPushNotificationsAsync = async () => {
 	if (Constants.isDevice) {

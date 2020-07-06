@@ -1,11 +1,12 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator, NavigationActions } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
 import { Platform, StatusBar, StyleSheet, View, Text, 
-	Vibration, Image, TouchableOpacity, SplashScreen } from 'react-native';
+	Vibration, Image, TouchableOpacity, SplashScreen, YellowBox } from 'react-native';
 import { DefaultTheme, Provider as PaperProvider, Button, Avatar } from 'react-native-paper';
 import { useDispatch, useSelector } from "react-redux";
 import { setJWT, setRefreshToken } from '../actions'
+import { config } from '../config'
 
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -17,6 +18,11 @@ import Withdraw from './Withdraw'
 import SettingsStack from './SettingsStack'
 import Exchange from './Exchange'
 import Cashout from './Cashout'
+import Chart from './Chart'
+
+YellowBox.ignoreWarnings([
+  'Non-serializable values were found in the navigation state',
+]);
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
@@ -25,13 +31,37 @@ const Stack = createStackNavigator()
 export default function Main(props) {
 	const { navigation } = props
 	const [isLoading, setLoading] = React.useState(false)
-	const loggedIn = useSelector(state => state.reducers.loggedIn)
+
 	const jwt = useSelector(state => state.reducers.jwt)
+	const refresh = useSelector(state => state.persistReducers.refresh)
 	const dispatch = useDispatch()
 
-	React.useEffect(() => {
-		
-	},[loggedIn])
+	function refreshToken() {
+		fetch(config.url + '/refresh', {
+			method: 'POST',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				refresh: refresh
+			})
+		})
+		.then((response) => {
+			if (response.status === 200) {
+				response.json()
+				.then(responseJson => {
+					dispatch(setJWT(responseJson.newToken))
+				})
+			}
+			else {
+				dispatch(setRefreshToken(false))
+			}
+		})
+		.catch((error) => {
+			console.error(error);
+		});
+	}
 
 	return (
 		<Stack.Navigator 
@@ -43,6 +73,9 @@ export default function Main(props) {
 			<Stack.Screen 
 				name='Login' 
 				component={Login}
+				initialParams={{
+					refreshToken: () => refreshToken()
+				}}
 			/>
 			<Stack.Screen 
 				name='Signup' 
@@ -64,6 +97,13 @@ export default function Main(props) {
 				name='Cashout' 
 				component={Cashout} 
 			/>
+			<Stack.Screen 
+				name='Chart' 
+				component={Chart}
+				initialParams={{
+					refreshToken: () => refreshToken()
+				}}
+			/>
 		</Stack.Navigator>	
 	);
 }
@@ -73,6 +113,7 @@ function Home(props) {
 	const theme = useSelector(state => state.persistReducers.theme)
 	return (
 		<Tab.Navigator
+			screenProps={{test: 'asdasd'}}
 			screenOptions={({ route }) => ({
 				tabBarIcon: ({ focused, color, size }) => {
 
@@ -106,9 +147,19 @@ function Home(props) {
 				}
 			}}
 		>
-			<Tab.Screen name="Wallet" component={Wallet}/>
-			<Tab.Screen name="ExchangeButton" component={Wallet} tabBarButton />
-			<Tab.Screen name="Settings" component={SettingsStack} />
+			<Tab.Screen 
+				name="Wallet" 
+				component={Wallet}
+			/>
+			<Tab.Screen 
+				name="ExchangeButton" 
+				component={Wallet}
+				tabBarButton
+			/>
+			<Tab.Screen 
+				name="Settings" 
+				component={SettingsStack} 
+			/>
 		</Tab.Navigator>
 	)
 }
